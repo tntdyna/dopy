@@ -29,7 +29,7 @@ def paginated(func):
             nxt = None
 
             if isinstance(result, dict):
-                for key, value in result.items():
+                for key, value in list(result.items()):
                     if key in out and isinstance(out[key], list):
                         out[key].extend(value)
                     else:
@@ -80,7 +80,7 @@ class DoManager(object):
             }
             if ssh_key_ids:
                 # Need to be an array in v2
-                if isinstance(ssh_key_ids, basestring):
+                if isinstance(ssh_key_ids, str):
                     ssh_key_ids = [ssh_key_ids]
 
                 if type(ssh_key_ids) == list:
@@ -250,13 +250,13 @@ class DoManager(object):
         return json
 
     def populate_droplet_ips(self, droplet):
-        droplet[u'ip_address'] = ''
+        droplet['ip_address'] = ''
         for networkIndex in range(len(droplet['networks']['v4'])):
             network = droplet['networks']['v4'][networkIndex]
             if network['type'] == 'public':
-                droplet[u'ip_address'] = network['ip_address']
+                droplet['ip_address'] = network['ip_address']
             if network['type'] == 'private':
-                droplet[u'private_ip_address'] = network['ip_address']
+                droplet['private_ip_address'] = network['ip_address']
 
 #regions==========================================
     def all_regions(self):
