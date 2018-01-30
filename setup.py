@@ -13,7 +13,7 @@ setup(
     name="dopy",
     version=dopy.__version__,
     description="Python client for the Digital Ocean API",
-    long_description=read("README.rst"),
+    long_description=read("README.md"),
     author="devo.ps",
     author_email="vincent@devo.ps",
     maintainer="Vincent Viallet",
