@@ -8,7 +8,7 @@ Installation
 
 ```bash
 pip install dopy
-``
+```
 
 Getting Started
 ===============
@@ -53,7 +53,7 @@ is using names instead of IDs for domains and slugs for
 sizes, images and datacenters; ex.
 
 ```pycon
-    >>> do.show_domain('exapmle.com')
+    >>> do.show_domain('example.com')
     >>> do.new_droplet('new_droplet', '512mb', 'lamp', 'ams2')
 ```
 
