@@ -7,7 +7,7 @@ and returns their response as a dict.
 
 import requests
 import json as json_module
-from six import wraps
+from collections import OrderedDict
 
 API_ENDPOINT = 'https://api.digitalocean.com/v2'
 
@@ -16,42 +16,13 @@ class DoError(RuntimeError):
     pass
 
 
-def paginated(func):
-    @wraps(func)
-    def wrapper(self, url, headers=None, params=None, method='GET'):
-        if method != 'GET':
-            return func(self, url, headers, params, method)
-
-        nxt = url
-        out = {}
-
-        while nxt is not None:
-            result = func(self, nxt, headers, params, 'GET')
-            nxt = None
-
-            if isinstance(result, dict):
-                for key, value in list(result.items()):
-                    if key in out and isinstance(out[key], list):
-                        out[key].extend(value)
-                    else:
-                        out[key] = value
-
-                if 'links' in result \
-                        and 'pages' in result['links'] \
-                        and 'next' in result['links']['pages']:
-                    nxt = result['links']['pages']['next']
-
-        return out
-    return wrapper
-
-
 class DoManager(object):
     def __init__(self, api_key):
         self.api_endpoint = API_ENDPOINT
         self.api_key = api_key
 
     def all_active_droplets(self):
-        json = self.request('/droplets/')
+        json = self.request('/droplets', params={'page': 1, 'per_page': 1})
         for index in range(len(json['droplets'])):
             self.populate_droplet_ips(json['droplets'][index])
         return json['droplets']
@@ -186,11 +157,13 @@ class DoManager(object):
                 droplet['private_ip_address'] = network['ip_address']
 
 # Regions ==========================================
+
     def all_regions(self):
         json = self.request('/regions/')
         return json['regions']
 
 # Images ==========================================
+
     def all_images(self, filter='global'):
         params = {'filter': filter}
         json = self.request('/images/', params)
@@ -222,6 +195,7 @@ class DoManager(object):
         return json
 
 # ssh_keys =========================================
+
     def all_ssh_keys(self):
         json = self.request('/account/keys')
         return json['ssh_keys']
@@ -245,11 +219,13 @@ class DoManager(object):
         return True
 
 # Sizes ============================================
+
     def sizes(self):
         json = self.request('/sizes/')
         return json['sizes']
 
 # Domains ==========================================
+
     def all_domains(self):
         json = self.request('/domains/')
         return json['domains']
@@ -305,6 +281,7 @@ class DoManager(object):
         return True
 
 # Actions ========================
+
     def show_all_actions(self):
         json = self.request('/actions')
         return json['actions']
@@ -382,6 +359,7 @@ class DoManager(object):
         return json['action']
 
 # Tags =====================================
+
     def new_tag(self, name):
         params = {
             'name': str(name)
@@ -438,47 +416,13 @@ class DoManager(object):
         return json
 
 # Low Level ========================================
+
     def request(self, path, params={}, method='GET'):
         if not path.startswith('/'):
             path = '/'+path
         url = self.api_endpoint+path
 
-        headers = {'Authorization': "Bearer %s" % self.api_key}
-        resp = self.request_v2(url, params=params, headers=headers, method=method)
-
-        return resp
-
-    def request_v1(self, url, params={}, method='GET'):
-        try:
-            resp = requests.get(url, params=params, timeout=60)
-            json = resp.json()
-        except ValueError:  # requests.models.json.JSONDecodeError
-            raise ValueError("The API server doesn't respond with a valid json")
-        except requests.RequestException as e:  # errors from requests
-            raise RuntimeError(e)
-
-        if resp.status_code != requests.codes.ok:
-            if json:
-                if 'error_message' in json:
-                    raise DoError(json['error_message'])
-                elif 'message' in json:
-                    raise DoError(json['message'])
-            # The JSON reponse is bad, so raise an exception with the HTTP status
-            resp.raise_for_status()
-        if json.get('status') != 'OK':
-            raise DoError(json['error_message'])
-
-        return json
-
-    def process_response(self, response):
-        if response.status_code == 204:
-            return {'status': response.status_code}
-        else:
-            return response.json()
-
-    @paginated
-    def request_v2(self, url, headers={}, params={}, method='GET'):
-        headers['Content-Type'] = 'application/json'
+        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer %s' % self.api_key}
 
         try:
             if method == 'POST':
@@ -492,7 +436,7 @@ class DoManager(object):
                 json = resp.json()
             elif method == 'GET':
                 resp = requests.get(url, headers=headers, params=params, timeout=60)
-                json = resp.json()
+                json = resp.json(object_pairs_hook=OrderedDict)
             else:
                 raise DoError('Unsupported method %s' % method)
 
@@ -515,10 +459,16 @@ class DoManager(object):
 
         return json
 
+    def process_response(self, response):
+        if response.status_code == 204:
+            return {'status': response.status_code}
+        else:
+            return response.json()
+
 
 if __name__ == '__main__':
     import os
-    api_token = os.environ.get('DO_API_TOKEN') or os.environ['DO_API_KEY']
+    api_token = os.environ.get('DO_API_TOKEN')
     do = DoManager(api_token)
     import sys
     fname = sys.argv[1]

@@ -29,5 +29,5 @@ setup(
                  "Programming Language :: Python :: 2.7"),
     license=read("LICENSE"),
     packages=['dopy'],
-    install_requires=["requests >= 2.18.4", "six >= 1.11.0"],
+    install_requires=["requests >= 2.18.4"],
 )
