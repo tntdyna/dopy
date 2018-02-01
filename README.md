@@ -8,7 +8,7 @@ Installation
 
 ```bash
 pip install dopy
-```
+``
 
 Getting Started
 ===============
@@ -19,11 +19,10 @@ valid API keys.
 Keys can be set either as env variables or within the code.
 
 ```bash
-    # export DO_API_TOKEN='api_token'
+    $ export DO_API_TOKEN='api_token'
 ```
 
 ```pycon
-
     >>> from dopy.manager import DoManager
     >>> do = DoManager('api_token')
 ```
@@ -31,7 +30,7 @@ Keys can be set either as env variables or within the code.
 Methods
 =======
 
-The methods of the DoManager are self explanatory; ex.
+The methods of the DoManager are self explanatory, for example:
 
 ```pycon
     >>> do.all_active_droplets()
@@ -42,15 +41,7 @@ The methods of the DoManager are self explanatory; ex.
     >>> do.all_ssh_keys()
     >>> do.sizes()
     >>> do.all_domains()
-    >>> do.new_droplet('new_droplet', 66, 1601, 1)
-```
-
-The methods for v.2 API are similar, the only difference
-is using names instead of IDs for domains and slugs for
-sizes, images and datacenters. For example:
-
-```pycon
-    >>> do.show_domain('example.com')
+    >>> do.show_domain('exapmle.com')
     >>> do.new_droplet('new_droplet', '512mb', 'lamp', 'ams2')
 ```
 
