@@ -8,7 +8,7 @@ Installation
 
 ```bash
 pip install dopy
-``
+```
 
 Getting Started
 ===============
