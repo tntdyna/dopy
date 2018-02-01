@@ -12,7 +12,7 @@ def read(filename):
 setup(
     name="dopy",
     version=dopy.__version__,
-    description="Python client for the Digital Ocean API",
+    description="Python client for the Digital Ocean API v.2",
     long_description=read("README.md"),
     author="devo.ps",
     author_email="vincent@devo.ps",
@@ -29,5 +29,5 @@ setup(
                  "Programming Language :: Python :: 2.7"),
     license=read("LICENSE"),
     packages=['dopy'],
-    install_requires=["requests >= 2.18.4", "six >= 1.11.0"],
+    install_requires=["requests >= 2.18.4"],
 )

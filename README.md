@@ -1,7 +1,7 @@
 Digital Ocean API Python Wrapper
 ================================
 
-Inspired by [dop](https://github.com/ahmontero/dop).
+Inspired by [ahmontero/dop](https://github.com/ahmontero/dop).
 
 Installation
 ============
@@ -14,21 +14,18 @@ Getting Started
 ===============
 
 To interact with Digital Ocean, you first need .. a digital ocean account with 
-valid API keys.
+valid API keys. 
 
-Keys can be set either as Env variables, or within the code.
-
-For API v.2.
+Keys can be set either as env variables or within the code.
 
 ```bash
-    # export DO_API_VERSION='2'
     # export DO_API_TOKEN='api_token'
 ```
 
 ```pycon
 
     >>> from dopy.manager import DoManager
-    >>> do = DoManager(None, 'api_token', api_version=2)
+    >>> do = DoManager('api_token')
 ```
 
 Methods
@@ -50,7 +47,7 @@ The methods of the DoManager are self explanatory; ex.
 
 The methods for v.2 API are similar, the only difference
 is using names instead of IDs for domains and slugs for
-sizes, images and datacenters; ex.
+sizes, images and datacenters. For example:
 
 ```pycon
     >>> do.show_domain('example.com')
