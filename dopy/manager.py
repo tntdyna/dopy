@@ -17,8 +17,9 @@ class DoError(RuntimeError):
 
 
 class DoManager(object):
-    def __init__(self, api_key, api_version=2):
+    def __init__(self, client_id, api_key, api_version=2):
         self.api_endpoint = API_ENDPOINT
+        self.client_id = client_id
         self.api_key = api_key
         # api_version required by Ansible
         self.api_version = int(api_version)
