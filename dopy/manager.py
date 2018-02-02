@@ -17,9 +17,11 @@ class DoError(RuntimeError):
 
 
 class DoManager(object):
-    def __init__(self, api_key):
+    def __init__(self, api_key, api_version):
         self.api_endpoint = API_ENDPOINT
         self.api_key = api_key
+        # api_version required by Ansible
+        self.api_version = 2
 
     def all_active_droplets(self):
         json = self.request('/droplets', params={'page': 1, 'per_page': 1})
