@@ -159,6 +159,12 @@ class DoManager(object):
             if network['type'] == 'private':
                 droplet['private_ip_address'] = network['ip_address']
 
+# Snapshots=======================================
+    def snapshot(self, snapshot_id):
+        json = self.request('/snapshots/{}'.format(snapshot_id))
+        return json['snapshot']
+
+
 # Regions ==========================================
 
     def all_regions(self):
