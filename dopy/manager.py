@@ -164,7 +164,6 @@ class DoManager(object):
         json = self.request('/snapshots/{}'.format(snapshot_id))
         return json['snapshot']
 
-
 # Regions ==========================================
 
     def all_regions(self):
